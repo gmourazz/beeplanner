@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beeplanner 🐝 — Entrar</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐝</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFF8F5; --surface:#FFFFFF; --surface2:#FFF0EC; --panel:#FDF6F3;
+  --primary:#F4A5B8; --primary-dark:#E8799A; --accent:#F9C784;
+  --text:#3D2B2B; --muted:#9B7575; --border:#F0D0D8;
+  --shadow:rgba(232,121,154,0.16);
+  --err:#E05050; --err-bg:#FFF0F0; --err-border:#FFCCCC;
+  --ok:#3AAA6A; --ok-bg:#EDFAF3; --ok-border:#B8EDD1;
+  --font-d:'Cormorant Garamond',Georgia,serif;
+  --font-b:'DM Sans',system-ui,sans-serif;
+  --r:12px; --tr:all .2s ease;
+}
+.dark {
+  --bg:#0D0D0D; --surface:#181818; --surface2:#222; --panel:#141414;
+  --text:#F0EAE8; --muted:#666; --border:#2C2C2C;
+  --err-bg:#2A1010; --err-border:#5A2020;
+  --ok-bg:#102A1A; --ok-border:#205A30;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);transition:background .3s,color .3s;display:flex}
+
+/* ── LEFT PANEL (branding) ── */
+.auth-left{
+  width:420px;min-width:420px;
+  background:linear-gradient(160deg,var(--primary-dark) 0%,#C45880 50%,#D4A060 100%);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:48px 44px;position:relative;overflow:hidden;
+}
+.auth-left::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='rgba(255,255,255,0.08)'/%3E%3C/svg%3E") repeat;
+  pointer-events:none;
+}
+.auth-left-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.auth-left-logo .bee{font-size:28px;animation:beePulse 4s ease-in-out infinite;display:inline-block}
+.auth-left-logo .lt{font-family:var(--font-d);font-size:26px;font-style:italic;color:white}
+.auth-left-tagline{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:40px 0;
+}
+.alt-h{font-family:var(--font-d);font-size:42px;font-style:italic;color:white;line-height:1.1;margin-bottom:16px}
+.alt-p{font-size:15px;color:rgba(255,255,255,.78);line-height:1.75;font-weight:300;max-width:300px}
+.alt-feats{margin-top:30px;display:flex;flex-direction:column;gap:12px}
+.alt-feat{display:flex;align-items:center;gap:10px;font-size:14px;color:rgba(255,255,255,.9)}
+.alt-feat .af-ico{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.auth-left-foot{font-size:12px;color:rgba(255,255,255,.5);position:relative;z-index:1}
+
+/* floating bees */
+.lf-bee{position:absolute;pointer-events:none;animation:floatBee 7s ease-in-out infinite}
+@keyframes floatBee{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+
+/* ── RIGHT PANEL (form) ── */
+.auth-right{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  overflow-y:auto;padding:40px 28px;
+  background:var(--bg);
+}
+.auth-card{width:100%;max-width:430px}
+.auth-card-header{margin-bottom:30px}
+.auth-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;margin-bottom:28px;width:fit-content;transition:color .2s}
+.auth-back:hover{color:var(--primary-dark)}
+.auth-h{font-family:var(--font-d);font-size:32px;font-style:italic;margin-bottom:6px;line-height:1.1}
+.auth-sub{font-size:14px;color:var(--muted);font-weight:300}
+
+/* ── TABS ── */
+.auth-tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:4px;gap:4px;margin-bottom:26px}
+.auth-tab{flex:1;padding:9px 8px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-size:13.5px;font-weight:500;cursor:pointer;transition:var(--tr);font-family:var(--font-b)}
+.auth-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+
+/* ── OAUTH ── */
+.oauth-row{display:flex;gap:10px;margin-bottom:20px}
+.oauth-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 14px;border-radius:var(--r);
+  border:1.5px solid var(--border);background:var(--surface);
+  color:var(--text);cursor:pointer;font-size:13.5px;font-weight:500;
+  transition:var(--tr);font-family:var(--font-b);position:relative;
+}
+.oauth-btn:hover{background:var(--surface2);border-color:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 14px var(--shadow)}
+.oauth-full{width:100%;margin-bottom:10px;flex:none;justify-content:flex-start;gap:12px;padding:12px 18px}
+.oauth-badge{position:absolute;right:12px;font-size:10px;padding:2px 8px;border-radius:99px;background:var(--accent);color:#5A3A00;font-weight:700}
+
+/* ── DIVIDER ── */
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:11.5px;font-weight:500;text-transform:uppercase;letter-spacing:.8px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── METHOD TABS ── */
+.method-tabs{display:flex;gap:8px;margin-bottom:18px}
+.method-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px;border-radius:10px;border:1.5px solid var(--border);
+  background:transparent;color:var(--muted);font-size:13px;font-weight:500;
+  cursor:pointer;transition:var(--tr);font-family:var(--font-b)}
+.method-tab.active{border-color:var(--primary-dark);background:var(--surface2);color:var(--primary-dark)}
+.method-tab:hover:not(.active){background:var(--surface2)}
+
+/* ── INPUTS ── */
+.field-wrap{margin-bottom:14px}
+.field-label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
+.field-input-wrap{position:relative}
+.field-input{
+  width:100%;padding:12px 40px 12px 14px;
+  border:1.5px solid var(--border);border-radius:var(--r);
+  background:var(--surface2);color:var(--text);
+  font-size:14px;outline:none;transition:var(--tr);
+  font-family:var(--font-b);
+}
+.field-input:focus{border-color:var(--primary-dark);box-shadow:0 0 0 3px var(--shadow)}
+.field-input.err{border-color:var(--err)}
+.field-input.ok{border-color:var(--ok)}
+.field-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;opacity:.5}
+.field-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:15px;cursor:pointer;opacity:.5;transition:opacity .2s;background:none;border:none;color:var(--text);padding:2px}
+.field-eye:hover{opacity:1}
+.phone-wrap{display:flex;gap:8px}
+.phone-code{
+  width:90px;flex-shrink:0;
+  padding:12px 10px;border:1.5px solid var(--border);border-radius:var(--r);
+  background:var(--surface2);color:var(--text);font-size:14px;
+  font-family:var(--font-b);outline:none;cursor:pointer;transition:var(--tr);
+}
+.phone-code:focus{border-color:var(--primary-dark);box-shadow:0 0 0 3px var(--shadow)}
+
+/* ── HINT / DEMO ── */
+.demo-hint{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:var(--r);
+  font-size:13px;color:var(--muted);margin-bottom:20px;
+}
+.demo-hint strong{color:var(--primary-dark)}
+.demo-fill{margin-left:auto;font-size:12px;color:var(--primary-dark);cursor:pointer;font-weight:600;white-space:nowrap}
+.demo-fill:hover{text-decoration:underline}
+
+/* ── ALERT ── */
+.alert{
+  display:none;padding:10px 14px;border-radius:var(--r);
+  font-size:13px;margin-bottom:14px;align-items:center;gap:8px;
+}
+.alert.show{display:flex}
+.alert-err{background:var(--err-bg);border:1px solid var(--err-border);color:var(--err)}
+.alert-ok{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok)}
+
+/* ── SUBMIT BTN ── */
+.submit-btn{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--primary-dark),#D4668A);
+  color:white;border:none;border-radius:var(--r);
+  font-size:15px;font-weight:600;cursor:pointer;
+  font-family:var(--font-b);transition:var(--tr);
+  box-shadow:0 4px 16px var(--shadow);
+  margin-top:4px;
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--shadow);filter:brightness(1.05)}
+.submit-btn:active{transform:none}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ── FOOTER ── */
+.auth-foot{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
+.auth-foot a{color:var(--primary-dark);text-decoration:none;font-weight:500}
+.auth-foot a:hover{text-decoration:underline}
+
+/* ── PHONE VERIFY ── */
+.verify-step{display:none}
+.verify-step.show{display:block}
+.code-inputs{display:flex;gap:10px;justify-content:center;margin:24px 0}
+.code-input{
+  width:52px;height:58px;border-radius:12px;
+  border:1.5px solid var(--border);background:var(--surface2);
+  color:var(--text);font-size:24px;font-weight:600;
+  text-align:center;outline:none;font-family:var(--font-d);
+  transition:var(--tr);
+}
+.code-input:focus{border-color:var(--primary-dark);box-shadow:0 0 0 3px var(--shadow)}
+
+/* ── DARK TOGGLE (top right) ── */
+.auth-dark-btn{
+  position:fixed;top:20px;right:20px;z-index:100;
+  width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:var(--tr);box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+.auth-dark-btn:hover{border-color:var(--primary-dark);box-shadow:0 4px 16px var(--shadow)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:840px){
+  .auth-left{display:none}
+  body{overflow-y:auto;overflow-x:hidden}
+  html,body{height:auto;min-height:100%}
+  .auth-right{min-height:100vh}
+}
+
+/* ── ANIMATIONS ── */
+@keyframes beePulse{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.07) rotate(4deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.auth-card{animation:fadeUp .4s ease}
+
+/* ── PROGRESS STEPS ── */
+.progress-steps{display:flex;align-items:center;gap:6px;margin-bottom:24px}
+.p-step{width:8px;height:8px;border-radius:50%;background:var(--border);transition:var(--tr)}
+.p-step.active{background:var(--primary-dark);width:22px;border-radius:4px}
+.p-step.done{background:var(--ok)}
+</style>
+</head>
+<body>
+
+<!-- LEFT BRANDING PANEL -->
+<div class="auth-left">
+  <!-- floating bees -->
+  <div class="lf-bee" style="right:30px;top:15%;font-size:36px;animation-delay:0s">🐝</div>
+  <div class="lf-bee" style="left:20px;bottom:25%;font-size:22px;animation-delay:2s">🌸</div>
+  <div class="lf-bee" style="right:60px;bottom:15%;font-size:18px;animation-delay:4s">✨</div>
+
+  <a class="auth-left-logo" href="index.html">
+    <span class="bee">🐝</span>
+    <span class="lt">Beeplanner</span>
+  </a>
+
+  <div class="auth-left-tagline">
+    <h2 class="alt-h">Organize sua vida<br>com doçura 🍯</h2>
+    <p class="alt-p">Um planner bonito e completo pra quem quer mais leveza e organização no dia a dia.</p>
+    <div class="alt-feats">
+      <div class="alt-feat"><div class="af-ico">📅</div> Vista a semana toda de um jeito visual</div>
+      <div class="alt-feat"><div class="af-ico">🌱</div> Acompanhe seus hábitos diários</div>
+      <div class="alt-feat"><div class="af-ico">⭐</div> Nunca esqueça uma data importante</div>
+      <div class="alt-feat"><div class="af-ico">🎨</div> 9 temas únicos pra personalizar</div>
+    </div>
+  </div>
+
+  <div class="auth-left-foot">🐝 Beeplanner • Feito com carinho</div>
+</div>
+
+<!-- RIGHT FORM PANEL -->
+<div class="auth-right">
+  <!-- Dark toggle -->
+  <button class="auth-dark-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
+
+  <div class="auth-card">
+
+    <!-- BACK -->
+    <div class="auth-back" onclick="window.location.href='index.html'">
+      ← Voltar ao início
+    </div>
+
+    <!-- HEADER -->
+    <div class="auth-card-header">
+      <h1 class="auth-h" id="authTitle">Bem-vinda de volta 🌸</h1>
+      <p class="auth-sub" id="authSub">Entre na sua conta para continuar</p>
+    </div>
+
+    <!-- TABS: login / register -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Criar conta</button>
+    </div>
+
+    <!-- DEMO HINT -->
+    <div class="demo-hint" id="demoHint">
+      <span>🎯</span>
+      <span><strong>Demo:</strong> demo@beeplanner.app / <strong>admin123</strong></span>
+      <span class="demo-fill" onclick="fillDemo()">Preencher →</span>
+    </div>
+
+    <!-- OAUTH -->
+    <div>
+      <button class="oauth-btn oauth-full" onclick="oauthLogin('google')">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continuar com Google
+        <span class="oauth-badge">OAuth2</span>
+      </button>
+      <div class="oauth-row">
+        <button class="oauth-btn" onclick="oauthLogin('github')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </button>
+        <button class="oauth-btn" onclick="toast('Apple login em breve!')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Apple
+        </button>
+      </div>
+    </div>
+
+    <div class="divider">ou use</div>
+
+    <!-- METHOD TABS: email / phone -->
+    <div class="method-tabs">
+      <button class="method-tab active" id="methodEmail" onclick="switchMethod('email')">
+        <span>✉️</span> E-mail
+      </button>
+      <button class="method-tab" id="methodPhone" onclick="switchMethod('phone')">
+        <span>📱</span> Telefone
+      </button>
+    </div>
+
+    <!-- ALERT -->
+    <div class="alert alert-err" id="alertErr">
+      <span>⚠️</span><span id="alertErrMsg"></span>
+    </div>
+    <div class="alert alert-ok" id="alertOk">
+      <span>✅</span><span id="alertOkMsg"></span>
+    </div>
+
+    <!-- ═══ FORM: EMAIL ═══ -->
+    <div id="emailForms">
+
+      <!-- LOGIN by email -->
+      <div id="emailLogin">
+        <div class="field-wrap">
+          <label class="field-label">E-mail</label>
+          <div class="field-input-wrap">
+            <input class="field-input" id="loginEmail" type="email" placeholder="seu@email.com" autocomplete="email">
+            <span class="field-icon">✉️</span>
+          </div>
+        </div>
+        <div class="field-wrap">
+          <label class="field-label" style="display:flex;justify-content:space-between">
+            Senha
+            <a href="#" onclick="startForgot()" style="font-weight:400;color:var(--primary-dark);font-size:11px;text-transform:none;letter-spacing:0">Esqueceu?</a>
+          </label>
+          <div class="field-input-wrap">
+            <input class="field-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+            <button class="field-eye" onclick="togglePass('loginPass',this)">👁</button>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="doEmailLogin()">Entrar ✨</button>
+      </div>
+
+      <!-- REGISTER by email -->
+      <div id="emailRegister" style="display:none">
+        <div class="progress-steps" id="regSteps">
+          <div class="p-step active" id="ps1"></div>
+          <div class="p-step" id="ps2"></div>
+          <div class="p-step" id="ps3"></div>
+        </div>
+
+        <!-- Step 1: name + email -->
+        <div id="regStep1">
+          <div class="field-wrap">
+            <label class="field-label">Nome completo</label>
+            <div class="field-input-wrap">
+              <input class="field-input" id="regName" type="text" placeholder="Seu nome..." autocomplete="name">
+              <span class="field-icon">🌸</span>
+            </div>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">E-mail</label>
+            <div class="field-input-wrap">
+              <input class="field-input" id="regEmail" type="email" placeholder="seu@email.com" autocomplete="email">
+              <span class="field-icon">✉️</span>
+            </div>
+          </div>
+          <button class="submit-btn" onclick="regStep1Next()">Próximo →</button>
+        </div>
+
+        <!-- Step 2: password -->
+        <div id="regStep2" style="display:none">
+          <div class="field-wrap">
+            <label class="field-label">Crie sua senha</label>
+            <div class="field-input-wrap">
+              <input class="field-input" id="regPass" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="checkPassStrength(this.value)">
+              <button class="field-eye" onclick="togglePass('regPass',this)">👁</button>
+            </div>
+            <div id="passStrength" style="margin-top:6px;display:none">
+              <div style="height:4px;border-radius:99px;background:var(--border);overflow:hidden">
+                <div id="psBar" style="height:100%;border-radius:99px;transition:all .3s;width:0"></div>
+              </div>
+              <div id="psLabel" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
+            </div>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Confirmar senha</label>
+            <div class="field-input-wrap">
+              <input class="field-input" id="regPassConfirm" type="password" placeholder="Repita a senha" autocomplete="new-password">
+              <button class="field-eye" onclick="togglePass('regPassConfirm',this)">👁</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="submit-btn" style="background:var(--surface2);color:var(--text);border:1.5px solid var(--border);box-shadow:none;flex:0 0 80px" onclick="regGoBack(1)">← Voltar</button>
+            <button class="submit-btn" style="flex:1" onclick="regStep2Next()">Próximo →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: done -->
+        <div id="regStep3" style="display:none;text-align:center;padding:10px 0">
+          <div style="font-size:56px;margin-bottom:16px;animation:beePulse 2s infinite;display:inline-block">🐝</div>
+          <h3 style="font-family:var(--font-d);font-size:26px;font-style:italic;margin-bottom:8px">Conta criada! ✨</h3>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:26px">Seja bem-vinda ao Beeplanner, <strong id="regConfirmName"></strong>!</p>
+          <button class="submit-btn" onclick="doFinalRegister()">Entrar no app 🚀</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FORM: PHONE ═══ -->
+    <div id="phoneForms" style="display:none">
+
+      <!-- Phone login / register -->
+      <div id="phoneInput">
+        <div class="field-wrap">
+          <label class="field-label">Número de telefone</label>
+          <div class="phone-wrap">
+            <select class="phone-code" id="phoneCode">
+              <option value="+55">🇧🇷 +55</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+351">🇵🇹 +351</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+34">🇪🇸 +34</option>
+              <option value="+49">🇩🇪 +49</option>
+              <option value="+33">🇫🇷 +33</option>
+              <option value="+81">🇯🇵 +81</option>
+            </select>
+            <div class="field-input-wrap" style="flex:1">
+              <input class="field-input" id="phoneNum" type="tel" placeholder="(11) 99999-9999" oninput="formatPhone(this)">
+              <span class="field-icon">📱</span>
+            </div>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="sendSMSCode()">Enviar código SMS 📲</button>
+      </div>
+
+      <!-- SMS verify -->
+      <div class="verify-step" id="smsVerify">
+        <div style="text-align:center;margin-bottom:4px">
+          <div style="font-size:40px;margin-bottom:10px">📲</div>
+          <p style="font-size:14px;color:var(--muted)">Código enviado para <strong id="phoneDisplay"></strong></p>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px">Digite o código de 6 dígitos</p>
+        </div>
+        <div class="code-inputs">
+          <input class="code-input" maxlength="1" oninput="codeNext(this,0)" id="c0">
+          <input class="code-input" maxlength="1" oninput="codeNext(this,1)" id="c1">
+          <input class="code-input" maxlength="1" oninput="codeNext(this,2)" id="c2">
+          <input class="code-input" maxlength="1" oninput="codeNext(this,3)" id="c3">
+          <input class="code-input" maxlength="1" oninput="codeNext(this,4)" id="c4">
+          <input class="code-input" maxlength="1" oninput="codeNext(this,5)" id="c5">
+        </div>
+        <button class="submit-btn" onclick="verifySMSCode()">Verificar código ✅</button>
+        <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
+          Não recebeu? <a href="#" onclick="resendCode()" style="color:var(--primary-dark)">Reenviar <span id="resendTimer"></span></a>
+          · <a href="#" onclick="backToPhone()" style="color:var(--muted)">Trocar número</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- FOOTER LINK -->
+    <div class="auth-foot" id="authFoot">
+      Não tem conta? <a href="#" onclick="switchTab('register')">Criar agora →</a>
+    </div>
+
+  </div><!-- /auth-card -->
+</div><!-- /auth-right -->
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:11px 22px;border-radius:99px;font-size:14px;font-weight:500;z-index:999;transition:transform .3s;pointer-events:none"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DARK MODE
+// ══════════════════════════════════════════════
+let dark = localStorage.getItem('bp_dark') === 'true';
+function applyDark() {
+  document.documentElement.classList.toggle('dark', dark);
+  document.getElementById('darkBtn').textContent = dark ? '☀️' : '🌙';
+}
+function toggleDark() { dark = !dark; localStorage.setItem('bp_dark', dark); applyDark(); }
+applyDark();
+
+// ══════════════════════════════════════════════
+//  DEMO USERS (stored in localStorage)
+// ══════════════════════════════════════════════
+const DEMO_EMAIL = 'demo@beeplanner.app';
+const DEMO_PASS  = 'admin123';
+const REAL_EMAIL = 'gmourazz18@gmail.com'; // your real email — always accepted
+
+function getUsers() { return JSON.parse(localStorage.getItem('bp_users') || '[]'); }
+function saveUsers(u) { localStorage.setItem('bp_users', JSON.stringify(u)); }
+
+// Seed your real account if not exists
+(function seedRealAccount() {
+  const users = getUsers();
+  if (!users.find(u => u.email === REAL_EMAIL)) {
+    users.push({ name: 'Gabriel Moura', email: REAL_EMAIL, pass: 'admin123', phone: null, provider: 'email', createdAt: new Date().toISOString() });
+    saveUsers(users);
+  }
+})();
+
+// ══════════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════════
+let currentTab = 'login';
+let currentMethod = 'email';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('emailLogin').style.display   = (tab === 'login'    && currentMethod === 'email') ? 'block' : 'none';
+  document.getElementById('emailRegister').style.display= (tab === 'register' && currentMethod === 'email') ? 'block' : 'none';
+  document.getElementById('phoneInput').style.display   = (currentMethod === 'phone') ? 'block' : 'none';
+  document.getElementById('smsVerify').classList.remove('show');
+
+  document.getElementById('authTitle').textContent = tab === 'login' ? 'Bem-vinda de volta 🌸' : 'Criar sua conta 🐝';
+  document.getElementById('authSub').textContent   = tab === 'login' ? 'Entre na sua conta para continuar' : 'Preencha os dados para começar';
+  document.getElementById('authFoot').innerHTML    = tab === 'login'
+    ? 'Não tem conta? <a href="#" onclick="switchTab(\'register\')">Criar agora →</a>'
+    : 'Já tem conta? <a href="#" onclick="switchTab(\'login\')">Entrar →</a>';
+  document.getElementById('demoHint').style.display = tab === 'login' ? 'flex' : 'none';
+  clearAlerts();
+}
+
+function switchMethod(m) {
+  currentMethod = m;
+  document.getElementById('methodEmail').classList.toggle('active', m === 'email');
+  document.getElementById('methodPhone').classList.toggle('active', m === 'phone');
+  document.getElementById('emailForms').style.display = m === 'email' ? 'block' : 'none';
+  document.getElementById('phoneForms').style.display = m === 'phone' ? 'block' : 'none';
+  switchTab(currentTab); // re-apply visibility
+  clearAlerts();
+}
+
+// ══════════════════════════════════════════════
+//  DEMO FILL
+// ══════════════════════════════════════════════
+function fillDemo() {
+  document.getElementById('loginEmail').value = DEMO_EMAIL;
+  document.getElementById('loginPass').value  = DEMO_PASS;
+  showOk('Dados demo preenchidos! Clique em Entrar.');
+}
+
+// ══════════════════════════════════════════════
+//  EMAIL LOGIN
+// ══════════════════════════════════════════════
+function doEmailLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('loginPass').value;
+  clearAlerts();
+
+  if (!email || !pass) { showErr('Preencha e-mail e senha.'); return; }
+
+  const isDemo = email === DEMO_EMAIL && pass === DEMO_PASS;
+  const users  = getUsers();
+  const found  = users.find(u => u.email === email && u.pass === pass);
+  const isReal = email === REAL_EMAIL && pass === 'admin123';
+
+  if (!isDemo && !found && !isReal) {
+    showErr('E-mail ou senha incorretos. Tente a conta demo!');
+    document.getElementById('loginEmail').classList.add('err');
+    document.getElementById('loginPass').classList.add('err');
+    return;
+  }
+
+  const name = isDemo ? 'Demo User 🐝' : (found ? found.name : 'Gabriel Moura');
+  loginSuccess({ name, email, provider: 'email' });
+}
+
+// ══════════════════════════════════════════════
+//  REGISTER STEPS
+// ══════════════════════════════════════════════
+let regData = {};
+
+function regStep1Next() {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  clearAlerts();
+  if (!name)  { showErr('Digite seu nome.'); return; }
+  if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) { showErr('E-mail inválido.'); return; }
+  const users = getUsers();
+  if (users.find(u => u.email === email)) { showErr('E-mail já cadastrado. Tente fazer login.'); return; }
+  regData.name = name; regData.email = email;
+  setStep(2);
+}
+
+function regStep2Next() {
+  const pass    = document.getElementById('regPass').value;
+  const confirm = document.getElementById('regPassConfirm').value;
+  clearAlerts();
+  if (pass.length < 8) { showErr('Senha deve ter mínimo 8 caracteres.'); return; }
+  if (pass !== confirm) { showErr('As senhas não coincidem.'); return; }
+  regData.pass = pass;
+  document.getElementById('regConfirmName').textContent = regData.name.split(' ')[0];
+  setStep(3);
+}
+
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('regStep'+i).style.display = i===n ? 'block' : 'none';
+    const ps = document.getElementById('ps'+i);
+    if (ps) ps.className = 'p-step ' + (i<n ? 'done' : i===n ? 'active' : '');
+  });
+}
+
+function regGoBack(to) { setStep(to); clearAlerts(); }
+
+function doFinalRegister() {
+  const users = getUsers();
+  users.push({ name: regData.name, email: regData.email, pass: regData.pass, phone: null, provider: 'email', createdAt: new Date().toISOString() });
+  saveUsers(users);
+  loginSuccess({ name: regData.name, email: regData.email, provider: 'email' });
+}
+
+// Password strength
+function checkPassStrength(v) {
+  const el = document.getElementById('passStrength');
+  const bar = document.getElementById('psBar');
+  const lbl = document.getElementById('psLabel');
+  if (!v) { el.style.display='none'; return; }
+  el.style.display = 'block';
+  let score = 0;
+  if (v.length >= 8) score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const levels = [
+    {w:'25%',bg:'#E05050',l:'Muito fraca'},
+    {w:'50%',bg:'#F0A040',l:'Fraca'},
+    {w:'75%',bg:'#F9C784',l:'Boa'},
+    {w:'100%',bg:'#3AAA6A',l:'Forte 💪'},
+  ];
+  const lv = levels[score-1] || levels[0];
+  bar.style.width = lv.w; bar.style.background = lv.bg;
+  lbl.textContent = lv.l; lbl.style.color = lv.bg;
+}
+
+// ══════════════════════════════════════════════
+//  PHONE / SMS
+// ══════════════════════════════════════════════
+let smsCode = '';
+let resendInterval = null;
+
+function formatPhone(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 11) v = v.slice(0,11);
+  if (v.length > 6)      el.value = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+  else if (v.length > 2) el.value = '(' + v.slice(0,2) + ') ' + v.slice(2);
+  else                   el.value = v;
+}
+
+function sendSMSCode() {
+  const phone = document.getElementById('phoneNum').value.replace(/\D/,'');
+  const code  = document.getElementById('phoneCode').value;
+  clearAlerts();
+  if (phone.length < 8) { showErr('Digite um número de telefone válido.'); return; }
+
+  // Simulate: generate 6-digit code
+  smsCode = String(Math.floor(100000 + Math.random() * 900000));
+  const fullPhone = code + ' ' + document.getElementById('phoneNum').value;
+  document.getElementById('phoneDisplay').textContent = fullPhone;
+
+  document.getElementById('phoneInput').style.display = 'none';
+  document.getElementById('smsVerify').classList.add('show');
+  document.getElementById('c0').focus();
+
+  showOk(`Código simulado enviado! Use: ${smsCode}`);
+  startResendTimer(60);
+}
+
+function codeNext(el, idx) {
+  el.value = el.value.replace(/\D/,'').slice(-1);
+  if (el.value && idx < 5) document.getElementById('c'+(idx+1)).focus();
+  if (idx === 5 && el.value) verifySMSCode();
+}
+
+function verifySMSCode() {
+  const entered = [0,1,2,3,4,5].map(i => document.getElementById('c'+i).value).join('');
+  clearAlerts();
+  if (entered.length < 6) { showErr('Digite o código completo.'); return; }
+  if (entered !== smsCode) { showErr('Código incorreto. Tente novamente.'); return; }
+
+  const phone = document.getElementById('phoneCode').value + document.getElementById('phoneNum').value;
+  const users = getUsers();
+  let user = users.find(u => u.phone === phone);
+  if (!user) {
+    user = { name: 'Usuário 📱', email: null, pass: null, phone, provider: 'phone', createdAt: new Date().toISOString() };
+    users.push(user);
+    saveUsers(users);
+  }
+  loginSuccess({ name: user.name, phone, provider: 'phone' });
+}
+
+function backToPhone() {
+  document.getElementById('smsVerify').classList.remove('show');
+  document.getElementById('phoneInput').style.display = 'block';
+  clearAlerts();
+}
+
+function startResendTimer(sec) {
+  clearInterval(resendInterval);
+  const el = document.getElementById('resendTimer');
+  let s = sec;
+  el.textContent = `(${s}s)`;
+  resendInterval = setInterval(() => {
+    s--;
+    el.textContent = s > 0 ? `(${s}s)` : '';
+    if (s <= 0) clearInterval(resendInterval);
+  }, 1000);
+}
+
+function resendCode() {
+  smsCode = String(Math.floor(100000 + Math.random() * 900000));
+  showOk(`Novo código simulado: ${smsCode}`);
+  startResendTimer(60);
+  [0,1,2,3,4,5].forEach(i => document.getElementById('c'+i).value = '');
+  document.getElementById('c0').focus();
+}
+
+// ══════════════════════════════════════════════
+//  OAUTH (simulado — backend real usaria Passport.js)
+// ══════════════════════════════════════════════
+function oauthLogin(provider) {
+  const names = { google: 'Gabriel Moura', github: 'Dev User 🐙', apple: 'Apple User 🍎' };
+  const emails = { google: REAL_EMAIL, github: 'github@demo.com', apple: 'apple@demo.com' };
+  showOk(`Conectando com ${provider}...`);
+  setTimeout(() => {
+    loginSuccess({ name: names[provider], email: emails[provider], provider });
+  }, 1200);
+}
+
+// ══════════════════════════════════════════════
+//  LOGIN SUCCESS → redirect to app
+// ══════════════════════════════════════════════
+function loginSuccess(user) {
+  localStorage.setItem('bp_session', JSON.stringify({ ...user, loginAt: new Date().toISOString() }));
+  toast('Bem-vinda! 🌸');
+  setTimeout(() => {
+    window.location.href = 'app.html'; // redirect to main app
+  }, 700);
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function togglePass(id, btn) {
+  const el = document.getElementById(id);
+  const show = el.type === 'password';
+  el.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+}
+
+function showErr(msg) {
+  document.getElementById('alertErrMsg').textContent = msg;
+  document.getElementById('alertErr').classList.add('show');
+}
+function showOk(msg) {
+  document.getElementById('alertOkMsg').textContent = msg;
+  document.getElementById('alertOk').classList.add('show');
+}
+function clearAlerts() {
+  document.getElementById('alertErr').classList.remove('show');
+  document.getElementById('alertOk').classList.remove('show');
+  document.querySelectorAll('.field-input').forEach(el => el.classList.remove('err','ok'));
+}
+
+function startForgot() {
+  showOk('Recuperação de senha: funcionalidade disponível com backend 🔐');
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => el.style.transform = 'translateX(-50%) translateY(80px)', 2500);
+}
+
+// ══════════════════════════════════════════════
+//  INIT — check URL params
+// ══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'register') switchTab('register');
+  if (params.get('mode') === 'demo') { fillDemo(); setTimeout(doEmailLogin, 400); }
+
+  // If already logged in, redirect
+  const session = localStorage.getItem('bp_session');
+  if (session) {
+    try {
+      const s = JSON.parse(session);
+      if (s?.name) {
+        // Uncomment to auto-redirect:
+        // window.location.href = 'app.html';
+      }
+    } catch(e) {}
+  }
+});
+</script>
+</body>
+</html>

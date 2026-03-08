@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #FFF8F5;
+  --surface: #FFFFFF;
+  --surface2: #FFF0EC;
+  --primary: #F4A5B8;
+  --primary-dark: #E8799A;
+  --accent: #F9C784;
+  --text: #3D2B2B;
+  --text-muted: #9B7575;
+  --border: #F5D5DC;
+  --sidebar: #FDF3F5;
+  --shadow: rgba(244, 165, 184, 0.2);
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --transition: all 0.2s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* Utilities */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes beePulse { 0%,100% { transform: scale(1) rotate(-5deg); } 50% { transform: scale(1.05) rotate(5deg); } }
+@keyframes shimmer { from { background-position: -200px 0; } to { background-position: calc(200px + 100%) 0; } }
+
+.animate-in { animation: fadeIn 0.3s ease forwards; }
+.slide-in { animation: slideIn 0.25s ease forwards; }
+
+/* Input base */
+input, textarea, select {
+  font-family: var(--font-body);
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+  font-size: 14px;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--shadow);
+}
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+button { font-family: var(--font-body); cursor: pointer; transition: var(--transition); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+a { color: inherit; text-decoration: none; }

@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const auth = require('../middleware/auth');
+const { query } = require('../db');
+router.use(auth);
+router.get('/', async (req, res) => { const r = await query('SELECT * FROM notes WHERE user_id=$1 ORDER BY updated_at DESC', [req.userId]); res.json(r.rows); });
+router.post('/', async (req, res) => { const { title='Nova nota', body='', color='#FFF0EC', tags=[], page_id } = req.body; const r = await query('INSERT INTO notes (user_id,page_id,title,body,color,tags) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *', [req.userId, page_id||null, title, body, color, tags]); res.status(201).json(r.rows[0]); });
+router.put('/:id', async (req, res) => { const { title, body, color, tags } = req.body; const r = await query('UPDATE notes SET title=$1,body=$2,color=$3,tags=$4 WHERE id=$5 AND user_id=$6 RETURNING *', [title, body, color, tags, req.params.id, req.userId]); res.json(r.rows[0]); });
+router.delete('/:id', async (req, res) => { await query('DELETE FROM notes WHERE id=$1 AND user_id=$2', [req.params.id, req.userId]); res.json({ success: true }); });
+module.exports = router;
