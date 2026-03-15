@@ -1,9 +1,8 @@
-// tasks.js
 const express = require('express');
 module.exports = (() => {
   const router = express.Router();
   const auth = require('../middleware/auth');
-  const { query } = require('../db');
+  const { query } = require('../config/db');
   router.use(auth);
   router.get('/', async (req, res) => {
     const { date } = req.query;

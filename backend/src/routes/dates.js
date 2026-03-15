@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const { query } = require('../db');
+const { query } = require('../config/db');
 
 const datesRouter = express.Router();
 datesRouter.use(auth);

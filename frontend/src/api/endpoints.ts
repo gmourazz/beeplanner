@@ -1,0 +1,68 @@
+const BASE = '';
+
+export const ENDPOINTS = {
+
+  // ── AUTH ─────────────────────────────────────────────────
+  auth: {
+    login:    `/auth/login`,
+    register: `/auth/register`,
+    me:       `/auth/me`,
+  },
+
+  // ── USUÁRIO ──────────────────────────────────────────────
+  users: {
+    profile: `/users/profile`,
+  },
+
+  // ── TAREFAS ──────────────────────────────────────────────
+  tasks: {
+    getAll:  (date?: string) => date ? `/tasks?date=${date}` : `/tasks`,
+    create:  `/tasks`,
+    update:  (id: string) => `/tasks/${id}`,
+    delete:  (id: string) => `/tasks/${id}`,
+    toggle:  (id: string) => `/tasks/${id}/toggle`,
+  },
+
+  // ── NOTAS ────────────────────────────────────────────────
+  notes: {
+    getAll:  `/notes`,
+    create:  `/notes`,
+    update:  (id: string) => `/notes/${id}`,
+    delete:  (id: string) => `/notes/${id}`,
+  },
+
+  // ── HÁBITOS ──────────────────────────────────────────────
+  habits: {
+    getAll:  `/habits`,
+    create:  `/habits`,
+    toggle:  (id: string) => `/habits/${id}/toggle`,
+    delete:  (id: string) => `/habits/${id}`,
+  },
+
+  // ── DATAS IMPORTANTES ────────────────────────────────────
+  dates: {
+    getAll:  `/dates`,
+    create:  `/dates`,
+    delete:  (id: string) => `/dates/${id}`,
+  },
+
+  // ── WORKSPACES ───────────────────────────────────────────
+  workspaces: {
+    getAll:  `/workspaces`,
+    create:  `/workspaces`,
+    delete:  (id: string) => `/workspaces/${id}`,
+  },
+
+  // ── PÁGINAS ──────────────────────────────────────────────
+  pages: {
+    create:  `/pages`,
+    update:  (id: string) => `/pages/${id}`,
+    delete:  (id: string) => `/pages/${id}`,
+  },
+
+  // ── FRASES DO DIA ────────────────────────────────────────
+  quotes: {
+    today:   `/quotes/today`,
+  },
+
+};
